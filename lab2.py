@@ -1,3 +1,8 @@
+def init():
+    global current_value, prev_value
+    current_value = 0
+    prev_value =0
+
 def display_current_value():
     print("Current value:", current_value)
 
