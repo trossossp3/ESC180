@@ -1,4 +1,4 @@
-# import lab2
+import lab2
 
 def sum_cubes(n):
     total =0
@@ -23,13 +23,15 @@ def leibniz(n):
         pi += ((-1)**x)/(2*x+1)
     return pi*4
 if __name__ == "__main__":
-    # lab2.init()
-    # print(lab2.current_value)
-    # lab2.add(3)
-    # print(lab2.current_value)
+    lab2.init()
+    print(lab2.current_value)
+    lab2.add(3)
+    print(lab2.current_value)
+    lab2.mutliply(3)
+    print(lab2.current_value)
     # print(check_sum(1000))
     # print(sum_cubes(100000))
     # print(sum_cubes_formula(100000))
     # print(check_sums_up_to_n(100000))
-    print(leibniz(1000000000))
+    # print(leibniz(1000000000))
 
