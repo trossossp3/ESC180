@@ -1,55 +1,108 @@
+from re import match
+from typing import Match
+
+
 def initialize():
     '''Initializes the global variables needed for the simulation.
     Note: this function is incomplete, and you may want to modify it'''
-    
+
     global cur_hedons, cur_health
 
     global cur_time
     global last_activity, last_activity_duration
-    
+
     global last_finished
     global bored_with_stars
-    
+    global star_offer_time
+    global cur_star_activity
+    global tired
     cur_hedons = 0
     cur_health = 0
-    
+    tired = None
     cur_star = None
+    star_offer_time = None
     cur_star_activity = None
-    
+
     bored_with_stars = False
-    
+
     last_activity = None
     last_activity_duration = 0
-    
-    cur_time = 0
-    
-    last_finished = -1000
-    
 
-            
+    cur_time = 0
+
+    last_finished = -1000
+
 
 def star_can_be_taken(activity):
     pass
 
-    
+
+
 def perform_activity(activity, duration):
-    pass
+    star_elegible = get_star_elegible(activity)
+
+    if(star_elegible):
+            if(activity == "running"):
+                if not tired:
+                    if duration < 10:
+                        cur_hedons += (2+3)*10
+                        cur_health += 3*duration
+                    elif duration > 10 and duration < 180:
+                        cur_hedons += (2+3)*10 + -2*(duration-10)
+                        cur_health += 3*duration
+                    else:
+                        cur_hedons += (2+3)*10 + -2*(duration-10)
+                        cur_health += 3*180 + 1*(duration-180)
+                else:
+                    if duration < 10:
+                        cur_hedons += (2+3)*10
+                        cur_health += duration*-2
+                    elif duration > 10 and duration < 180:
+                        cur_hedons += (2+3)*10 + -2*(duration-10)
+                        cur_health += duration*-2
+                    else:
+                        cur_hedons += (2+3)*10 + -2*(duration-10)
+                        cur_health += duration*-2
+            elif(activity == "textbooks"):
+                cur_health+=2*duration
+                if not tired:
+                    if duration <=20:
+                        cur_hedons+=duration
+                    else:
+                        cur_hedons+=duration*-1
+                else:
+                    cur_hedons+=-2*duration
+            else:
+                return 
+
+
+
+
+
+def get_star_elegible(activity):
+    same_activity = (activity == cur_star_activity)
+    correct_time = (cur_time==star_offer_time)
+    return same_activity and correct_time and not bored_with_stars
 
 def get_cur_hedons():
-    pass
+    return cur_hedons
     
 def get_cur_health():
-    pass
+    return cur_health
     
 def offer_star(activity):
-    pass
-        
+    global star_offer_time, cur_star_activity
+    print ("get star for: "+ activity)
+    star_offer_time = cur_time
+    cur_star_activity = activity
+
+
 def most_fun_activity_minute():
     pass
     
 ################################################################################
-#These functions are not required, but we recommend that you use them anyway
-#as helper functions
+# These functions are not required, but we recommend that you use them anyway
+# as helper functions
 
 def get_effective_minutes_left_hedons(activity):
     '''Return the number of minutes during which the user will get the full
