@@ -43,18 +43,29 @@ def perform_activity(activity, duration):
     star_elegible = int(star_can_be_taken(activity))
     tired = is_tired()
     if(activity == "running"):
-        do_run(duration, star_elegible)
+        arr = do_run(duration, star_elegible)
+        time_since_activity = 0
+        curr_run_duration += duration
+        cur_health+=arr[0]
+        cur_hedons+=arr[1]
     elif(activity == "textbooks"):
-        do_textbook(duration, star_elegible)
+        arr = do_textbook(duration, star_elegible)
+        time_since_activity = 0
+        curr_run_duration=0
+        cur_health+=arr[0]
+        cur_hedons+=arr[1]
     elif(activity == "resting"):
         time_since_activity += duration
+        curr_run_duration=0
     else:
         return
     cur_time += duration
     
 def do_textbook(duration, star_elegible):
-    global cur_hedons, cur_health, tired, cur_time, time_since_activity, last_activity, last_activity_duration, curr_run_duration
+    global tired, cur_time, time_since_activity, last_activity, last_activity_duration, curr_run_duration
     curr_run_duration=0
+    cur_health=0
+    cur_hedons=0
     cur_health += 2*duration
 
     if not tired:  # not tired if not tired or using star
@@ -66,16 +77,19 @@ def do_textbook(duration, star_elegible):
                 # star elegible will be either the star bonus or 0
             cur_hedons += 10 + (duration-10)*-1 + (3*10*star_elegible)
 
-    else:
-        curr_run_duration=0
+    else:    
         cur_hedons += -2*duration
-        time_since_activity = 0
+    # time_since_activity = 0
+    # curr_run_duration=0
+    return cur_health, cur_hedons
 
 def do_run(duration, star_elegible):
-    global tired, cur_hedons, cur_health, curr_run_duration, time_since_activity
+    global tired, curr_run_duration, time_since_activity
+    cur_hedons=0
+    cur_health=0
     if not tired:  # not tired if not tired or using star
         if duration < 10:
-            cur_hedons += 2*10 + (3*star_elegible*10)
+            cur_hedons += 2*duration + (3*star_elegible*duration)
             cur_health += 3*duration
         elif duration > 10 and duration < 180:
             cur_hedons += (2)*10+(3*star_elegible *
@@ -87,7 +101,7 @@ def do_run(duration, star_elegible):
     else:
 
         if duration+curr_run_duration < 10:
-            cur_hedons += (2)*10+(3*star_elegible*10)
+            cur_hedons += (-2)*duration+(3*star_elegible*duration)
             cur_health += 3*duration
 
         elif duration+curr_run_duration > 10 and duration+curr_run_duration < 180:
@@ -97,8 +111,9 @@ def do_run(duration, star_elegible):
         else:
             cur_hedons += (-2)*10+(3*star_elegible * 10) + -2*(duration-10)
             cur_health+=((duration+curr_run_duration)-180 * 1) + (duration-(duration+curr_run_duration-180))*3
-    time_since_activity = 0
-    curr_run_duration += duration
+    # time_since_activity = 0
+    # curr_run_duration += duration
+    return cur_health, cur_hedons
 
 
 def is_tired():
@@ -129,9 +144,19 @@ def offer_star(activity):
 
 def most_fun_activity_minute():
     global tired
-    if tired:
+    tired = is_tired()
+    # star_elegible = int(star_can_be_taken(activity))
+    running_headons = None
+    textbooks_headons = None
+    running_headons = do_run(1, int(star_can_be_taken("running")))[1]
+    textbooks_headons = do_textbook(1, int(star_can_be_taken("textbooks")))[1]
+    if(textbooks_headons > running_headons and textbooks_headons >0):
+        return "textbooks"
+    elif(running_headons>textbooks_headons and running_headons>0):
+        return "running"
+    else:
         return "resting"
-    # else:
+
 
 ################################################################################
 # These functions are not required, but we recommend that you use them anyway
