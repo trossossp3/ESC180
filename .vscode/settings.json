@@ -1,0 +1,27 @@
+// {
+//     "workbench.colorCustomizations": {
+//         "[Night Owl Light (No Italics)]": {
+//             "variable": "green"
+//         }
+//     }
+// }
+{
+    "editor.tokenColorCustomizations": {
+        "comments": "#ff101088",
+        "variables": "#8cd1d1",
+        "strings": "#696aa8",
+        "functions": "#8754e6",
+    },
+    "workbench.colorCustomizations": {
+        "activityBar.background": "#000C1D",
+        "activityBar.border": "#102a44",
+        "editorGroup.border": "#102a44",
+        "sideBar.background": "#001122",
+        "sideBar.border": "#102a44",
+        "sideBar.foreground": "#8BADC1",
+        "editor.background": "#001222",
+        "contrastBorder": "#122d42",
+        "focusBorder": "#122d42",
+    },
+    "python.pythonPath": "C:\\Users\\21tro\\AppData\\Local\\Programs\\Python\\Python310\\python.exe"
+}

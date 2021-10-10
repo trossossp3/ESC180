@@ -18,3 +18,11 @@ hedon points
 
 
 tired if they finished carring textbooks or running less than 2 hours ago with no rest
+
+
+running(20)
+20*3=60
+running(170)
+160*3
+10*1
+(170+20)-(170-20)*3
