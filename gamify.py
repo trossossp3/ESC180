@@ -14,7 +14,7 @@ def initialize():
 
     global last_finished
     global bored_with_stars
-    global star_offer_time
+    global star_offer_time, star_times
     global cur_star_activity
     global tired
     global time_since_activity
@@ -24,6 +24,7 @@ def initialize():
     cur_health = 0
     curr_run_duration = 0
     tired = None
+    star_times = []
     cur_star = None
     star_offer_time = None
     cur_star_activity = None
@@ -120,11 +121,21 @@ def is_tired():
 
     return time_since_activity < 120
 
+def tired_of_stars():
+    global star_times, bored_with_stars
+    if bored_with_stars:
+        return
+    if(len(star_times)<3):
+        bored_with_stars = False
+    else:
+        if(star_times[len(star_times)-1] - star_times[len(star_times)-3] < 180):
+            bored_with_stars = True
 
 def star_can_be_taken(activity):
     same_activity = (activity == cur_star_activity)
     correct_time = (cur_time == star_offer_time)
-    return same_activity and correct_time and not bored_with_stars
+    tired_of_stars()
+    return same_activity and correct_time and not bored_with_stars and not bored_with_stars
 
 
 def get_cur_hedons():
@@ -136,8 +147,9 @@ def get_cur_health():
 
 
 def offer_star(activity):
-    global star_offer_time, cur_star_activity
-    print("get star for: " + activity)
+    global star_offer_time, cur_star_activity, star_times
+    # print("get star for: " + activity)
+    star_times.append(cur_time)
     star_offer_time = cur_time
     cur_star_activity = activity
 
