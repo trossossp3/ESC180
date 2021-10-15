@@ -20,7 +20,15 @@ def function(arr1, arr2):
     return False
 print(function(arr1,arr2))
 
+# PROBLEM 3
+list0 = [1,2,2,3,4,5]
+def repeats(list0):
+    for i in range(1, len(list0)):
+        if list0[i] == list0[i-1]:
+            return True
+    return False
 
+print(repeats(list0))
 # Porblem 4
 
 def print_matrix_dim(M):
