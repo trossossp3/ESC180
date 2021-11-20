@@ -1,9 +1,9 @@
-def init():
-    global x
-    x=10
+arr = [[" "," "," "],[" ","b"," "]]
 
-def y(b=x):
-    print(b)
-if __name__ == "__main__":
-    init()
-    print(x)
+def is_empty(board):
+    for i in board:
+        if "b" in i or "w" in i:
+            return False
+    return True
+
+print(is_empty(arr))
