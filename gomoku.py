@@ -10,9 +10,8 @@ Author(s): Michael Guerzhoy with tests contributed by Siavash Kazemian.  Last mo
 """
 
 def is_empty(board):
-    for i in board:
-        if "b" in list or "w" in list:
-            return False
+    if "b" in board or "w" in board:
+        return False
     return True
 
     
@@ -25,7 +24,7 @@ def is_bounded(board, y_end, x_end, length, d_y, d_x):
         if(x_init == 0): bounded+=1
         else:
             if(board[y_end][x_init-1] != " "): bounded+=1 #if stone beside bounded increases
-        if(x_end == len(board)): bounded+=1 #if the stone is at the end or begining it must atleast be semi bounded
+        if(x_end == len(board)-1): bounded+=1 #if the stone is at the end or begining it must atleast be semi bounded
         else: 
             if(board[y_end][x_end+1]!=" "): bounded+=1
 
@@ -35,25 +34,27 @@ def is_bounded(board, y_end, x_end, length, d_y, d_x):
         if(y_init == 0): bounded+=1
         else:
             if(board[y_init-1][x_init] != " "): bounded+=1 #if stone beside bounded increases
-        if(y_end == len(board)): bounded+=1 #if the stone is at the end or begining it must atleast be semi bounded
+        if(y_end == len(board)-1): bounded+=1 #if the stone is at the end or begining it must atleast be semi bounded
         else: 
             if(board[y_end+1][x_init]!=" "): bounded+=1        
     elif d_y ==1 and d_x ==1:
         y_init = y_end - (length-1)
-        x_init = x_end + (length-1) #since starting from right x will be greater up board
+        x_init = x_end - (length-1) #since starting from right x will be greater up board
         if(x_init == 0 or y_init == 0): bounded+=1
         else:
-            if(board[y_init-1][x_init+1] != " "): bounded+=1 #if stone right diagonal
-        if(x_end == len(board) or y_end == len(board)): bounded+=1 #if the stone is at the end or begining it must atleast be semi bounded
+            if(board[y_init-1][x_init-1] != " "): bounded+=1 #if stone right diagonal
+        if(x_end == len(board)-1 or y_end == len(board)-1): bounded+=1 #if the stone is at the end or begining it must atleast be semi bounded
         else: 
             if(board[y_end+1][x_end+1]!=" "): bounded+=1 #if stone at end increase bounded
+    
+    
     else: #up right to low left
         y_init = y_end - (length-1)
-        x_init = x_end -(length-1)
-        if(x_init == len(board) or y_init == 0): bounded+=1 #bounded if at top or right side to 
+        x_init = x_end + (length-1)
+        if(x_init == len(board)-1 or y_init == 0): bounded+=1 #bounded if at top or right side to 
         else:
             if(board[y_init-1][x_init+1] != " "): bounded+=1 #if stone beside bounded increases
-        if(x_end == 0 or y_end == len(board)): bounded+=1 #if the stone is at the end or begining it must atleast be semi bounded
+        if(x_end == 0 or y_end == len(board)-1): bounded+=1 #if the stone is at the end or begining it must atleast be semi bounded
         else: 
             if(board[y_end+1][x_end-1]!=" "): bounded+=1 #if stone at end increase bounded
 
@@ -81,13 +82,19 @@ def detect_row(board, col, y_start, x_start, length, d_y, d_x):
                 if on_streak: # this would run when u were on a streak but now u are not on a streak
                     on_streak = False
                     
-                    if len_counter>=length:
-                        bounded = is_bounded(board,y,x,len_counter,d_y,d_x)
+                    if len_counter==length:
+                        bounded = is_bounded(board,y,x-1,len_counter,d_y,d_x)
                         if bounded == "OPEN":
                             open_seq_count+=1
                         elif bounded == "SEMIOPEN":
                             semi_open_seq_count+=1
                 len_counter = 0
+        if len_counter==length:
+            bounded = is_bounded(board,y,x,len_counter,d_y,d_x)
+            if bounded == "OPEN":
+                open_seq_count+=1
+            elif bounded == "SEMIOPEN":
+                semi_open_seq_count+=1
 
 
     if(d_y == 1 and d_x ==0):
@@ -103,38 +110,29 @@ def detect_row(board, col, y_start, x_start, length, d_y, d_x):
                 if on_streak: # this would run when u were on a streak but now u are not on a streak
                     on_streak = False
                     
-                    if len_counter>=length:
-                        bounded = is_bounded(board,y,x,len_counter,d_y,d_x)
+                    if len_counter==length:
+                        bounded = is_bounded(board,y-1,x,len_counter,d_y,d_x)
                         if bounded == "OPEN":
                             open_seq_count+=1
                         elif bounded == "SEMIOPEN":
                             semi_open_seq_count+=1
                 len_counter = 0
-    if(d_y == 1 and d_x ==0):
-        x = x_start
-        init=[]
-        for y in range(y_start, len(board)):
-            if board[y][x] == col:
-                if not on_streak:
-                    init = [y,x] #if this is the first col that is in the streak it is the init cootd
-                len_counter+=1
-                on_streak = True
-            else:
-                if on_streak: # this would run when u were on a streak but now u are not on a streak
-                    on_streak = False
-                    
-                    if len_counter>=length:
-                        bounded = is_bounded(board,y,x,len_counter,d_y,d_x)
-                        if bounded == "OPEN":
-                            open_seq_count+=1
-                        elif bounded == "SEMIOPEN":
-                            semi_open_seq_count+=1
-                len_counter = 0
-    if(d_y == 1 and d_x ==0):
+
+
+        if len_counter==length:
+            bounded = is_bounded(board,y,x,len_counter,d_y,d_x)
+            if bounded == "OPEN":
+                open_seq_count+=1
+            elif bounded == "SEMIOPEN":
+                semi_open_seq_count+=1
+
+
+
+    if(d_y == 1 and d_x ==1):
         x = x_start
         y= y_start
         init=[]
-        while x <= len(board) and y<= len(board):
+        while x < len(board) and y<len(board):
             if board[y][x] == col:
                 if not on_streak:
                     init = [y,x] #if this is the first col that is in the streak it is the init cootd
@@ -144,20 +142,27 @@ def detect_row(board, col, y_start, x_start, length, d_y, d_x):
                 if on_streak: # this would run when u were on a streak but now u are not on a streak
                     on_streak = False
                     
-                    if len_counter>=length:
-                        bounded = is_bounded(board,y,x,len_counter,d_y,d_x)
+                    if len_counter==length:
+                        bounded = is_bounded(board,y-1,x-1,len_counter,d_y,d_x)
                         if bounded == "OPEN":
                             open_seq_count+=1
                         elif bounded == "SEMIOPEN":
                             semi_open_seq_count+=1
                 len_counter = 0
             x+=1 #since we are doing diagonal must add one to x
-            y+=1    
-    if(d_y == 1 and d_x ==0):
+            y+=1
+        if len_counter==length:
+            bounded = is_bounded(board,y-1,x-1,len_counter,d_y,d_x)
+            if bounded == "OPEN":
+                open_seq_count+=1
+            elif bounded == "SEMIOPEN":
+                semi_open_seq_count+=1    
+   
+    if(d_y == 1 and d_x ==-1):
         x = x_start
         y= y_start
         init=[]
-        while x >= len(board) and y<= len(board):
+        while x >= 0 and y < len(board):
             if board[y][x] == col:
                 if not on_streak:
                     init = [y,x] #if this is the first col that is in the streak it is the init cootd
@@ -167,15 +172,21 @@ def detect_row(board, col, y_start, x_start, length, d_y, d_x):
                 if on_streak: # this would run when u were on a streak but now u are not on a streak
                     on_streak = False
                     
-                    if len_counter>=length:
-                        bounded = is_bounded(board,y,x,len_counter,d_y,d_x)
+                    if len_counter==length:
+                        bounded = is_bounded(board,y-1,x+1,len_counter,d_y,d_x)
                         if bounded == "OPEN":
                             open_seq_count+=1
                         elif bounded == "SEMIOPEN":
                             semi_open_seq_count+=1
                 len_counter = 0
             x-=1 #since we are doing diagonal must add one to x
-            y+=1    
+            y+=1
+        if len_counter==length:
+            bounded = is_bounded(board,y-1,x+1,len_counter,d_y,d_x)
+            if bounded == "OPEN":
+                open_seq_count+=1
+            elif bounded == "SEMIOPEN":
+                semi_open_seq_count+=1    
     return open_seq_count, semi_open_seq_count
     
 def detect_rows(board, col, length):
@@ -183,38 +194,124 @@ def detect_rows(board, col, length):
     open_seq_count, semi_open_seq_count = 0, 0
     
     # (0,1) direction first
-    for y in len(board):
+    for y in range(len(board)):
         open_seq_count += detect_row(board,col,y,0,length,0,1)[0]
-        semi_open_seq_count +=(board,col,y,0,length,0,1)[1]
+        semi_open_seq_count += detect_row(board,col,y,0,length,0,1)[1]
     #go col by col and look down (1,0)
-    for x in len(board):
+    for x in range(len(board)):
         open_seq_count += detect_row(board,col,0,x,length,1,0)[0]
-        semi_open_seq_count +=(board,col,0,x,length,1,0)[1]
+        semi_open_seq_count += detect_row(board,col,0,x,length,1,0)[1]
     #diagonal left and down check all the rows starting bottom left going top right
-    for y in len(board):
+    for y in range(len(board)):
         open_seq_count += detect_row(board,col,y,0,length,1,1)[0]
-        semi_open_seq_count +=(board,col,y,0,length,1,1)[1]
-    for x in len(board):
+        semi_open_seq_count +=detect_row(board,col,y,0,length,1,1)[1]
+    for x in range(1,len(board)):
         open_seq_count += detect_row(board,col,0,x,length,1,1)[0]
-        semi_open_seq_count +=(board,col,0,x,length,1,1)[1]
-     #diagonal right and down check all the rows starting bottom right going top right
-    for y in len(board):
-        open_seq_count += detect_row(board,col,y,0,length,1,-1)[0]
-        semi_open_seq_count +=(board,col,y,0,length,1,-1)[1]
+        semi_open_seq_count +=detect_row(board,col,0,x,length,1,1)[1]
+     #diagonal right and down check all the rows starting bottom right going top left
+    for y in range(1,len(board)):
+        open_seq_count += detect_row(board,col,y,len(board)-1,length,1,-1)[0]
+        semi_open_seq_count +=detect_row(board,col,y,len(board)-1,length,1,-1)[1]
     #check paramameters
     #check paramameters
     #check paramameters
-    for x in range(len(board), 0, -1): #check parameters
-        open_seq_count += detect_row(board,col,0,x,length,1,1)[0]
-        semi_open_seq_count +=(board,col,0,x,length,1,1)[1]
+    for x in range(len(board)-1, -1, -1): #check parameters
+        open_seq_count += detect_row(board,col,0,x,length,1,-1)[0]
+        semi_open_seq_count += detect_row(board,col,0,x,length,1,-1)[1]
     return open_seq_count, semi_open_seq_count
     
 def search_max(board):
-    copy_board = board.copy()
-    
+    # copy_board = board.copy()
+    max_score = 0
+    max_score_index = []
+    for x in range(len(board)):
+        for y in range(len(board)):
+            copy_board = board.copy()
+            if(copy_board[x][y] == " "):
+                copy_board[x][y] = "b"
+                score_game = score(copy_board)
+                copy_board[x][y]= " "
+                if(score_game > max_score):
+                    max_score = score_game
+                    max_score_index.clear()
+                    max_score_index.append([x,y])
+    move_y = max_score_index[0][0]
+    move_x = max_score_index[0][1]
     return move_y, move_x
-    
 
+def is_win(board):
+    count = 0
+    max_count = 0
+    max_col = " "
+    cur_col = " "
+    #check (0,1)
+    for y in range(len(board)):
+        for x in range(len(board)):
+            if board[y][x] == cur_col and cur_col != " ":
+                count +=1
+            else:
+                if(count == 5):
+                    return cur_col
+                count = 1
+                cur_col = board[x][y]
+        if count == 5:
+            return 
+    #check (1,0)
+    count = 0
+    cur_col = " "
+    for y in range(len(board)):
+        for x in range(len(board)):
+            if board[x][y] == cur_col and cur_col != " ":
+                count +=1
+            else:
+                if(count == 5):
+                    return cur_col
+                count = 1
+                cur_col = board[x][y]
+        if count == 5:
+            return 
+    #check (1,1)
+    #go through each row element check diagonal with that as start point
+    #increase y so starting a row below
+    count = 0
+    cur_col = " "
+    for y in range(len(board)):
+        y_it = y
+        count = 0
+        for x in range(len(board)):
+           
+            while x >=len(board) and y>= len(board):
+                if board[x][y_it] == cur_col and cur_col != " ":
+                    count +=1
+                else:
+                    if(count == 5):
+                        return cur_col
+                    count = 1
+                    cur_col = board[x][y_it]
+                y_it +=1
+        if count == 5:
+            return 
+    #check (1,-1)
+    #go through each row element check diagonal with that as start point
+    #increase y so starting a row below
+    count = 0
+    cur_col = " "
+    for y in range(len(board)):
+        y_it = y
+        count = 0
+        for x in range(len(board)-1,-1,-1):           
+            while x >=len(board) and y>= len(board):
+                if board[x][y_it] == cur_col and cur_col != " ":
+                    count +=1
+                else:
+                    if(count == 5):
+                        return cur_col
+                    count = 1
+                    cur_col = board[x][y_it]
+                y_it +=1
+        if count == 5:
+            return 
+        
 def score(board):
     MAX_SCORE = 100000
     
@@ -244,8 +341,7 @@ def score(board):
             open_b[2] + semi_open_b[2] - open_w[2] - semi_open_w[2])
 
     
-def is_win(board):
-    pass
+
 
 
 def print_board(board):
@@ -515,5 +611,7 @@ def some_tests():
   
             
 if __name__ == '__main__':
-    play_gomoku(8)
     
+    board =  [[' ', ' ', ' ', 'b', 'w', 'w', 'b', 'w'], [' ', ' ', ' ', 'b', ' ', 'b', 'b', 'w'], [' ', 'w', 'w', 'b', 'w', 'w', 'w', 'b'], ['w', 'w', 'b', 'w', 'b', ' ', ' ', 'w'], ['w', ' ', 'w', ' ', 'w', 'w', ' ', 'w'], [' ', ' ', 'w', 'w', 'b', 'w', 'w', 'w'], [' ', ' ', ' ', ' ', 'b', 'w', 'w', 'w'], [' ', 'w', 'w', 'w', 'w', 'w', 'w', ' ']]
+    print_board(board)
+    print(detect_rows(board, "w", 2))
