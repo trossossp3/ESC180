@@ -210,8 +210,11 @@ def detect_rows(board, col, length):
     return open_seq_count, semi_open_seq_count
     
 def search_max(board):
+    copy_board = board.copy()
+    
     return move_y, move_x
     
+
 def score(board):
     MAX_SCORE = 100000
     
