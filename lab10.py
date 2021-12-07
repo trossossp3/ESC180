@@ -3,6 +3,7 @@ def power(x,n):
     if n ==1:
         return x
     return x*power(x,n-1)
+    
 #question 2
 print(power(3,3))
 L1 = [1,3,5,7]
@@ -55,7 +56,7 @@ def is_balanced(s):
     if start == -1:
         return False 
        
-    ss = s[:start] + s[close+1:]
-    return is_balanced(ss)
+    s2 = s[:start] + s[close+1:]
+    return is_balanced(s2)
 
-print(is_balanced("(a(a)sa)aa()"))
+print(is_balanced("(a(a)sa)aa())"))
