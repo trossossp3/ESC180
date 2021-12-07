@@ -120,5 +120,5 @@ def run_similarity_test(filename, semantic_descriptors, similarity_fn):
             num_correct+=1
         else:
             num_incorrect+=1
-    return num_correct/(num_correct+num_incorrect)
+    return num_correct/(num_correct+num_incorrect) *100
 
