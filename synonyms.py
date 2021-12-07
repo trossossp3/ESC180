@@ -77,6 +77,7 @@ def build_semantic_descriptors_from_files(filenames):
 
 def processWords(s1):
     s1 = s1.lower()
+    s1 = s1.replace("\n", " ")
     s1 = s1.replace("!", ".")
     s1 = s1.replace(",", "")
     s1 = s1.replace("?", ".")
@@ -88,14 +89,14 @@ def processWords(s1):
     return s1
 
 
-# print(build_semantic_descriptors_from_files(["temp.txt", "text.txt"]))
+# print(build_semantic_descriptors_from_files(["sample_case.txt"]))
 
 
 def most_similar_word(word, choices, semantic_descriptors, similarity_fn):
     """find which element from choices is most similar to word using the semantic_descriptors"""
     
-    top_score = 0
-    top_index = -1
+    top_score = -10
+    top_index = 0
     word_dic = semantic_descriptors[word]
     for i in range(len(choices)):
         if(choices[i] in semantic_descriptors.keys()):
@@ -110,7 +111,7 @@ def most_similar_word(word, choices, semantic_descriptors, similarity_fn):
 def run_similarity_test(filename, semantic_descriptors, similarity_fn):
     text = open(filename, "r", encoding="latin1").read()
     lines = text.splitlines() #array of each line in the entry
-    print(lines)
+    # print(lines)
     num_correct = 0
     num_incorrect = 0
     for i in range(len(lines)):
@@ -122,3 +123,6 @@ def run_similarity_test(filename, semantic_descriptors, similarity_fn):
             num_incorrect+=1
     return num_correct/(num_correct+num_incorrect) *100
 
+# sem_descriptors = build_semantic_descriptors_from_files(["wp.txt", "sw.txt"])
+# res = run_similarity_test("text.txt", sem_descriptors, cosine_similarity)
+# print(res, "of the guesses were correct")
